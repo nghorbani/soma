@@ -1,0 +1,34 @@
+mocap:
+  fname: ???
+  ds_name: ${resolve_mocap_ds_name:${mocap.fname}}
+  subject_name: ${resolve_mocap_subject:${mocap.fname}}
+  basename: ${resolve_mocap_basename:${mocap.fname}}
+  unit: mm
+  rotate:
+  start_fidx: 0
+  end_fidx: -1
+  ds_rate: 1
+
+dirs:
+  work_base_dir: ???
+  support_base_dir: ???
+  work_dir: ${soma.expr_dir}/evaluations/${resolve_soma_runtime_work_dir:${soma.tracklet_labeling.enable}}
+  mocap_out_fname: ${dirs.work_dir}/${mocap.ds_name}/${mocap.subject_name}/${mocap.basename}.pkl
+  log_fname: ${dirs.work_dir}/${mocap.ds_name}/${mocap.subject_name}/${mocap.basename}.log
+
+soma:
+  expr_id: ???
+  data_id: OC_05_G_03_real_000_synt_100
+  expr_dir: ${dirs.work_base_dir}/training_experiments/${soma.expr_id}/${soma.data_id}
+  tracklet_labeling:
+    enable: False
+
+soma_train:
+
+
+keep_nan_points: True  # required for labeling evaluation
+save_c3d: True # save a c3d file from autolabeled mpc data
+retain_model_debug_details: False
+batch_size: 512
+verbosity: 1
+remove_zero_trajectories: False # required for labeling evaluation

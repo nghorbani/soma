@@ -1,0 +1,24 @@
+mocap_gt:
+  fname: ??? # should be provided at runtime
+  ds_name: ${resolve_mocap_ds_name:${mocap_gt.fname}} # dataset name
+  subject_name: ${resolve_mocap_subject:${mocap_gt.fname}}
+  basename: ${resolve_mocap_basename:${mocap_gt.fname}}
+  unit: mm
+  rotate:
+  ds_rate: 1
+  set_labels_to_nan:
+
+mocap_rec:
+  fname: ???
+  ds_name: ${resolve_mocap_ds_name:${mocap_rec.fname}}
+  subject_name: ${resolve_mocap_subject:${mocap_rec.fname}}
+  basename: ${resolve_mocap_basename:${mocap_rec.fname}}
+  unit: m # the mocap unit for soma pkl is meters
+  rotate:
+  ds_rate: 1
+
+dirs:
+  support_base_dir: ???
+  work_base_dir: ???
+  eval_pkl_out_fname: ${dirs.work_base_dir}/${mocap_rec.ds_name}/${mocap_rec.subject_name}/${mocap_rec.basename}_labeling.pkl
+  superset_fname: ???

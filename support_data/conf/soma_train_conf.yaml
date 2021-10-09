@@ -1,0 +1,141 @@
+surface_model:
+  num_betas: 10 #number of betas for generating body dataset
+  num_expressions: 80 # number of expressions for body dataset
+  gender: neutral # soma is trained to be gender neutral, however for later mosh use a gender specific model
+  type: smplx # model type
+  fname: ${dirs.support_base_dir}/${surface_model.type}/${surface_model.gender}/model.npz
+soma:
+  expr_id: ???
+  data_id: ${resolve_soma_data_id:${data_parms.mocap_dataset.num_occ_max},${data_parms.mocap_dataset.num_ghost_max},${data_parms.mocap_dataset.limit_real_data},${data_parms.mocap_dataset.limit_synt_data}}
+dirs:
+  work_base_dir: ??? #This is the main directory for newly produced data by SOMA
+  support_base_dir: ??? # This directory holds the body model, layouts, etc
+  work_dir: ${dirs.work_base_dir}/training_experiments/${soma.expr_id}/${soma.data_id}
+  log_dir: ${dirs.work_dir}/logs
+  log_fname: ${dirs.log_dir}/${soma.expr_id}_${soma.data_id}.log
+  cfg_fname: ${dirs.work_dir}/${soma.expr_id}_${soma.data_id}.yaml
+  dataset_dir: ${dirs.work_base_dir}/data/${soma.expr_id}  # 30 FPS
+  body_dataset_dir: ${dirs.dataset_dir}/body_dataset # could be shared for different experiments
+  marker_dataset_dir: ${dirs.dataset_dir}/marker_dataset # specific to a dataset and set of marker layouts used
+  amass_dir: ${dirs.support_base_dir}/${surface_model.type}/amass_neutral # amass pkl/npz dir
+  amass_marker_noise_dir: ${dirs.dataset_dir}/amass_marker_noise # this is to skip amass noise creation later
+train_parms:
+  batch_size: ???
+  num_workers: 5 # Used for dataloader
+  loss_weights:
+    labeling: 1.
+    body_part_mask: 0.1
+  gen_optimizer:
+    type: Adam
+    args:
+      lr: 0.001
+      weight_decay: 0.00005
+      betas: [ .9, .999 ]
+  lr_scheduler:
+    type: ReduceLROnPlateau
+    args:
+      #      metrics: val_loss
+      verbose: true
+      patience: 3
+  early_stopping:
+    monitor: val_loss
+    min_delta: 0.0
+    patience: 8
+    verbose: true
+    mode: min
+data_parms:
+  amass_splits:
+    vald: # HumanEva [40], ACCAD [4], and TotalCapture [25]
+      - HumanEva
+      - ACCAD
+      - TotalCapture
+    train: # CMU [9], Transitions [23] and Pose Prior [5]
+      - CMU
+      - Transitions
+      - PosePrior
+#      - CAESAR_SMPLx_betas # CAESAR
+  num_timeseq_frames: 1
+  num_frames_overlap: 0
+  unified_frame_rate: 30
+  body_dataset:
+    rnd_zrot: true
+    animate_face: false
+    animate_hand: false
+    num_hand_var_perseq: 15
+    augment_by_temporal_inversion: false # will use the time inverted window of data as an augmentation method
+  marker_dataset: # these values are used only to prepare the marker dataset. for train time obtain the control from mocap_dataset
+    superset_fname: ${dirs.marker_dataset_dir}/superset.json
+    use_real_data_from:
+    use_real_data_for:
+    #      - train
+    #      - vald
+    use_synt_data_for:
+      - train
+      - vald
+    wrist_markers_on_stick: false
+    num_random_vid_ring: 1  #to turn of random marker placement set to 0
+    num_marker_layout_augmentation: 1
+    enable_rnd_vid_on_face_hands: false
+    props:
+      enable: false
+      num_prop_marker_max: # to be automatically filled
+      static:
+      unit: mm
+      rotate: [ 90,0,0 ]
+  mocap_dataset:
+    # marker layouts for training will be merged to create superset
+    marker_layout_fnames: ???
+    ghost_distribution: spherical_gaussian # spherical_gaussian/ uniform/ skewed_gaussian
+    num_occ_max: 5
+    num_ghost_max: 3
+    limit_real_data: 0.0
+    limit_synt_data: 1.0
+    marker_noise_var: 0
+    amass_marker_noise_model:
+      enable: true
+      amass_splits:
+        vald:
+          - HumanEva
+          - ACCAD
+          - TotalCapture
+        train:
+          - CMU
+          - Transitions
+          - PosePrior
+model_parms:
+  labeler:
+    enable_transformer: true
+    enable_sinkhorn: true
+    num_sinkhorn_iters: 35
+    num_attention_heads: 5
+    num_attention_layers: 8
+    num_pooler_feat: 256
+    num_total_attention_feat: 125 # should be dividable by num_attention_heads
+trainer:
+  num_gpus: 4
+  max_epochs: 50
+  fast_dev_run: false
+  distributed_backend: dp
+  resume_training_if_possible: false
+  resume_checkpoint_fname:
+  finetune_checkpoint_fname:
+  weights_summary: top
+  profiler:
+  num_sanity_val_steps: 2
+  deterministic: true
+  limit_train_batches: 1.0
+  limit_val_batches: 1.0
+  overfit_batches: 0
+  rnd_seed: 100
+moshpp_cfg_override:
+  mocap:
+    unit: mm
+  surface_model:
+    gender: ${surface_model.gender} #the deault gender for training model is neutral. keep it that way
+    type: ${surface_model.type} # default smplx
+  opt_settings:
+    weights_type: ${surface_model.type}
+  moshpp:
+    verbosity: 1
+    separate_types:
+      - body

@@ -1,0 +1,60 @@
+dirs:
+  support_base_dir: ???
+  temp_base_dir: ???
+  work_base_dir: ???
+
+  png_out_dir: ${dirs.temp_base_dir}/${out.ds_name}/png_files/${render.blend_file_basename}/${out.subject_action_name}_${out.basename}
+  mesh_out_dir: ${dirs.temp_base_dir}/${out.ds_name}/mesh_files/${out.subject_action_name}_${out.basename}
+  mp4_out_fname: ${dirs.work_base_dir}/${out.ds_name}/${out.subject_action_name}/${out.basename}.mp4
+
+out:
+  basename: ${resolve_out_basename:${mesh.mosh_stageii_pkl_fnames}}
+  ds_name: ${resolve_out_ds_name:${mesh.mosh_stageii_pkl_fnames}}
+  subject_action_name: ${resolve_subject_action_name:${mesh.mosh_stageii_pkl_fnames}}
+
+mesh:
+  mosh_stageii_pkl_fnames: ???
+  enable_dmpl: True
+  ds_rate: 10
+
+  colors:
+    default: [ 0.345, 0.580, 0.713 ]
+
+  marker_radius:
+    default: 0.009
+    body: 0.009
+    face: 0.004
+    finger_left: 0.005
+    finger_right: 0.005
+  marker_color:
+    default: [ .7, .7, .7 ]
+    style: superset  # correctness/superset/black
+
+render:
+  blend_file_basename: soma_standard
+
+  show_markers: False
+  show_body: True
+  render_only_one_image: False
+  video_fps: 15
+
+  resolution:
+    change_from_blend: False
+    default: [ 800, 1024 ] # [x_res, y_res]
+
+  floor:
+    enable: True  # Use floor plane
+    plane_location: [ 0.0, 0.0, -0.01 ]  # bf/lr/ud
+
+  blender_fname: ${dirs.support_base_dir}/blender/blend_files/${render.blend_file_basename}.blend
+
+  save_final_blend_file: False
+
+  render_engine: cycles #cycles/eevee. as of 2.83 eevee doesnt work in headless mode
+  camera_tracking_mode: body  # Use tracking camera
+
+  rotate_body_object_z:  # this should be replaced by camera rotation
+
+  num_samples:
+    cycles: 128
+    eevee: 64

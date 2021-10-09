@@ -1,0 +1,16 @@
+mosh_gt:
+  stageii_fname: ???
+  ds_name: ${resolve_mocap_ds_name:${mosh_gt.stageii_fname}}
+  subject_name: ${resolve_mocap_subject:${mosh_gt.stageii_fname}}
+  basename: ${resolve_mosh_basename:${mosh_gt.stageii_fname}}
+
+mosh_rec:
+  stageii_fname: ???
+  ds_name: ${resolve_mocap_ds_name:${mosh_rec.stageii_fname}}
+  subject_name: ${resolve_mocap_subject:${mosh_rec.stageii_fname}}
+  basename: ${resolve_mosh_basename:${mosh_rec.stageii_fname}}
+
+dirs:
+  support_base_dir: ???
+  work_base_dir: ???
+  eval_pkl_out_fname: ${dirs.work_base_dir}/${mosh_rec.ds_name}/${mosh_rec.subject_name}/${mosh_rec.basename}_v2v.pkl

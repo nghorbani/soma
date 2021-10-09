@@ -1,0 +1,17 @@
+pool_size: 1
+max_num_jobs:
+randomly_run_jobs: False
+max_mem: 128
+jobs_per_instance: 1
+bid_amount: 1
+gpu_memory: 12
+avoid_nodes:
+use_highend_gpus: False
+cpu_count: 1
+gpu_count: 1
+concurrency_limits: 0
+username: nghorbani
+log_dir: /is/cluster/scratch/nghorbani/.cluster_log/soma_eval_label
+jobs_unique_name:
+max_run_time: 1
+max_auto_retries: 10
