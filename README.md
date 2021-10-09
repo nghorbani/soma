@@ -1,10 +1,10 @@
-# SOMA: Solving Optical Marker-Based MoCap Automatically, ICCV'21
+## SOMA: Solving Optical Marker-Based MoCap Automatically, ICCV'21
 
 This repository contains the official PyTorch implementation of:
 
 SOMA: Solving Optical Marker-Based MoCap Automatically\
 Nima Ghorbani and Michael J. Black\
-Full paper | Video | Project website | Poster
+[Paper](https://download.is.tue.mpg.de/soma/SOMA_ICCV19.pdf) | [Supp.Mat.](https://download.is.tue.mpg.de/soma/SOMA_Suppmat.pdf) | [Video](https://www.youtube.com/watch?v=BEFCqIefLA8&t=1s&ab_channel=MichaelBlack) | [Project website](https://soma.is.tue.mpg.de/) | [Poster](https://download.is.tue.mpg.de/soma/SOMA_Poster.pdf)
 
 ![alt text](https://download.is.tue.mpg.de/soma/tutorials/soma_github_teaser.gif "mocap point clouds (black dots in the back) turned into labeled markers (colored dots)")
 
