@@ -8,7 +8,7 @@ Nima Ghorbani and Michael J. Black\
 
 ![alt text](https://download.is.tue.mpg.de/soma/tutorials/soma_github_teaser.gif "mocap point clouds (black dots in the back) turned into labeled markers (colored dots)")
 
-SOMA **automatically transforms raw marker-based mocap point clouds** (black dots in the back) into **labeled markers** (colored dots) and **solved bodies**.
+SOMA **automatically transforms raw marker-based mocap point clouds** (black dots in the back) into **solved SMPL-X bodies** and **labeled markers** (colored dots).
 
 ## Installation
 
