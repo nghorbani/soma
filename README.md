@@ -48,8 +48,8 @@ Afterward uncompress contents of the precompiled
 [bpy-2.83](https://download.is.tue.mpg.de/download.php?domain=soma&sfile=blender/bpy-2.83-20200908.tar.bz2) 
 into your python site-packages folder, i.e. ````anaconda3/envs/soma/lib/python3.7/site-packages````. 
 
-Last but not least, the current SOMA code relies on [MoSh++](https://amass.is.tue.mpg.de/) mocap solver. 
-Please install [MoSh++](https://github.com/nghorbani/moshpp) following the guidelines in its repository.
+Last but not least, the current SOMA code relies on [MoSh++](https://github.com/nghorbani/moshpp) mocap solver. 
+Please install MoSh++ following the guidelines in its repository.
 
 
 ## Using SOMA
