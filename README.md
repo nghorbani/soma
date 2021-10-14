@@ -91,3 +91,7 @@ your rights under this [License](./LICENSE).
 
 The code in this repository is developed by [Nima Ghorbani](https://nghorbani.github.io/) 
 while at [Max-Planck Institute for Intelligent Systems, Tübingen, Germany](https://is.mpg.de/person/nghorbani).
+
+If you have any questions you can contact us at [soma@tuebingen.mpg.de](mailto:amass@tuebingen.mpg.de).
+
+For commercial licensing, contact [ps-licensing@tue.mpg.de](mailto:ps-licensing@tue.mpg.de)
