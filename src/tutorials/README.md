@@ -7,7 +7,7 @@ Refer to the OmegaConf tutorials for a full overview of capabilities.
 This technique is used overall in this project including SOMA, MoSh++, evaluation code, and Blender rendering capabilities. 
 You can find the configuration YAML files at 
 ```` soma/support_data/conf ````
-MoSH++ code has a similar configuration in its _support_data_ directory. 
+MoSh++ code has a similar configuration in its _support_data_ directory. 
 The entries in these files are default values that can be changed at runtime. 
 The code in this repository does not provide a command-line interface. 
 Instead, one can use Jupyter notebooks or plain Python scripts.
