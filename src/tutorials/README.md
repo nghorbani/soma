@@ -111,8 +111,8 @@ SOMA is implemented in PyTorch and the training code benefits from the
 PTL standardizes the training procedure and enables easy multi GPU training.
 
 We provide Jupyter notebooks to demonstrate use cases of SOMA with hands-on examples:
-- [Running SOMA on SOMA dataset](src/tutorials/run_soma_on_soma_dataset.ipynb).
-- [Solving an already labeled dataset](src/tutorials/solve_labeled_mocap.ipynb).
-- [Label Priming](src/tutorials/label_priming.ipynb).
-- [Run SOMA on the SOMA dataset](src/tutorials/run_soma_on_soma_dataset.ipynb).
-- [Run SOMA Ablation Study](src/tutorials/ablation_study.ipynb)
+- [Run SOMA on the SOMA dataset](run_soma_on_soma_dataset.ipynb).
+- [Solve an already labeled dataset](solve_labeled_mocap.ipynb).
+- [Label Priming](label_priming.ipynb).
+- [Run SOMA on the SOMA MoCap dataset](run_soma_on_soma_dataset.ipynb).
+- [Run SOMA Ablation Study](ablation_study.ipynb)
