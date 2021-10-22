@@ -30,7 +30,7 @@
 # 2021.06.18
 from glob import glob
 from os import path as osp
-
+import os.path as osp
 amass_mocap_base_dir = '/ps/project/amass/MOCAP'
 
 amass_datasets = {
@@ -38,6 +38,20 @@ amass_datasets = {
         'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'ACCAD', '*/*.c3d')),
         'mosh_cfg_override': {
             'mocap.unit': 'mm',
+        }
+    },
+    'BMLHandball': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'BMLhandball/pkl', '*/*.pkl')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
+        },
+    },
+    'BMLmovi': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'BMLmovi/2019_09_24', '*/*.pkl')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
+            'moshpp.optimize_toes': True,
+            'mocap.rotate': [0, 0, -90],
         }
     },
     'BMLrub': {
@@ -51,14 +65,6 @@ amass_datasets = {
             }
         },
     },
-    'BMLmovi': {
-        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'BMLmovi/2019_09_24', '*/*.pkl')),
-        'mosh_cfg_override': {
-            'mocap.unit': 'mm',
-            'moshpp.optimize_toes': True,
-            'mocap.rotate': [0, 0, -90],
-        }
-    },
     'CMU': {
         'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'CMU/c3d/subjects', '*/*.c3d')),
         'mosh_cfg_override': {
@@ -66,11 +72,47 @@ amass_datasets = {
             'moshpp.wrist_markers_on_stick': True
         }
     },
+    # 'CMUII': {
+    #     'mocap_fnames': glob(osp.join(amass_mocap_base_dir, '/CMU_II/SOMA_V48_02/CMUII_unlabeled_mpc', '*/*.c3d')),
+    #     'mosh_cfg_override': {
+    #         'mocap.unit': 'mm',
+    #         'surface_model.gender': '${resolve_gender:${mocap.fname},neutral}'
+    #     },
+    # },
     'CMU_MS': {
         'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'CMU/c3d/multisubject', '*/*.npz')),
         'mosh_cfg_override': {
             'mocap.unit': 'mm',
             'moshpp.optimize_dynamics': False
+        }
+    },
+    'CNRS': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'KIT_Whole_Body/CNRS', '*/*.c3d')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
+        }
+    },
+    'DFaust': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'DFAUST', '*/*.npz')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'm',
+            'moshpp.optimize_toes': True,
+        },
+        'render_cfg_override': {
+            'render.video_fps': 10,
+            'mesh.ds_rate': 2,
+        }
+    },
+    'DanceDB': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'DanceDB/SOMA_V48_02/DanceDB_c3d_120hz', '*/*.c3d')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
+        },
+    },
+    'EKUT': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'KIT_Whole_Body/EKUT', '*/*.c3d')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
         }
     },
     'Eyes_Japan_Dataset': {
@@ -79,6 +121,39 @@ amass_datasets = {
             'mocap.unit': 'mm',
             'moshpp.wrist_markers_on_stick': True,
             'moshpp.optimize_dynamics': False
+        }
+    },
+    # 'GRAB': {
+    #     'mocap_fnames': glob(
+    #         osp.join(amass_mocap_base_dir, 'PS_MoCaps/GRAB/GRAB_manual_labeled_gap_filled', '*/*.c3d')),
+    #     'mosh_cfg_override': {
+    #         'mocap.unit': 'mm',
+    #         'moshpp.optimize_toes': True,
+    #         'moshpp.optimize_fingers': True,
+    #         'moshpp.optimize_betas': False,
+    #         'opt_settings.weights_type': 'smplx_grab_vtemplate',
+    #         'moshpp.stagei_frame_picker.least_avail_markers': 1.0,
+    #
+    #         'moshpp.separate_types': ['body', 'finger', 'face'],
+    #         'subject_specific_settings': {subject_name:
+    #                                           {'moshpp.v_template_fname':f'/ps/project/amass/MOCAP/PS_MoCaps/GRAB/subject_meshes/{subject_name}.ply'}
+    #                                                     for subject_name in [f's{d}' for d in range(1,11)]},
+    #         'dirs.marker_layout_fname': '/ps/project/amass/MOCAP/PS_MoCaps/GRAB/marker_layout/s4/apple_eat_1.c3d',
+    #     }
+    # },
+    'HDM05': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'MPI_HDM05', '*/*.c3d')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
+            'moshpp.optimize_dynamics': False
+        }
+    },
+    'HUMAN4D': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'HUMAN4D/mocap_pkls', '*/*.pkl')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'm',
+            'moshpp.optimize_dynamics': False,
+            'moshpp.optimize_toes': False,
         }
     },
     'HumanEva': {
@@ -96,11 +171,27 @@ amass_datasets = {
             'moshpp.optimize_dynamics': False
         }
     },
-    'HDM05': {
-        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'MPI_HDM05', '*/*.c3d')),
+    'LAFAN1': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'LAFAN1/mocap_pkls', '*/*.pkl')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'm',
+            'moshpp.optimize_dynamics': False
+        }
+    },
+    'SNU': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'SNU/initial_website_scrap', '*/*.c3d')),
         'mosh_cfg_override': {
             'mocap.unit': 'mm',
-            'moshpp.optimize_dynamics': False
+            'moshpp.optimize_dynamics': False,
+            'moshpp.optimize_toes': False,
+        }
+    },
+
+    'MoSh': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'MPI_mosh/c3d/subjects', '*/*.c3d')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
+            'moshpp.wrist_markers_on_stick': True,
         }
     },
     'PosePrior': {
@@ -116,13 +207,6 @@ amass_datasets = {
         #     }
         # },
     },
-    'MoSh': {
-        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'MPI_mosh/c3d/subjects', '*/*.c3d')),
-        'mosh_cfg_override': {
-            'mocap.unit': 'mm',
-            'moshpp.wrist_markers_on_stick': True,
-        }
-    },
     'SFU': {
         'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'SFU', '*/*.c3d')),
         'mosh_cfg_override': {
@@ -130,14 +214,19 @@ amass_datasets = {
             'mocap.rotate': [90, 0, 0],
         }
     },
-    # 'GRAB': {
-    #     'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'GRAB/new_mocaps', '*/*.c3d')),
-    #     'mosh_cfg_override': {
-    #         'mocap.unit': 'mm',
-    #         'moshpp.optimize_toes': True,
-    #         'dirs.marker_layout_fname': '/ps/project/amass/MOCAP/GRAB/smplx_00174.json'
-    #     }
-    # },
+    'Rokoko': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'Rokoko/c3d', '*/*.c3d')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
+            'mocap.rotate': [90, 0, 0],
+        }
+    },
+    'SOMA': {
+        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'PS_MoCaps/SOMA/SOMA_manual_labeled', '*/*.c3d')),
+        'mosh_cfg_override': {
+            'mocap.unit': 'mm',
+        },
+    },
     'SSM': {
         'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'SSM_synced/resynced', '*/*.pkl')),
         'persubject_marker_layout': True,
@@ -156,13 +245,6 @@ amass_datasets = {
             }
         },
     },
-    'DFaust': {
-        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'DFAUST', '*/*.npz')),
-        'mosh_cfg_override': {
-            'mocap.unit': 'm',
-            'moshpp.optimize_toes': True,
-        },
-    },
     'TCDHands': {
         'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'TCD_handMocap/c3d_fullmkrs', '*/*.c3d')),
         'mosh_cfg_override': {
@@ -178,24 +260,11 @@ amass_datasets = {
             'mocap.rotate': [90, 0, 0],
         }
     },
-
     'Transitions': {
         'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'Transitions_mocap/c3d', '*/*.c3d')),
         'mosh_cfg_override': {
             'mocap.unit': 'mm',
             'mocap.rotate': [90, 0, 180],
-        }
-    },
-    'EKUT': {
-        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'KIT_Whole_Body/EKUT', '*/*.c3d')),
-        'mosh_cfg_override': {
-            'mocap.unit': 'mm',
-        }
-    },
-    'CNRS': {
-        'mocap_fnames': glob(osp.join(amass_mocap_base_dir, 'KIT_Whole_Body/CNRS', '*/*.c3d')),
-        'mosh_cfg_override': {
-            'mocap.unit': 'mm',
         }
     },
     'WEIZMANN': {
@@ -205,3 +274,7 @@ amass_datasets = {
         }
     },
 }
+
+if __name__ == '__main__':
+    for k in sorted(amass_datasets.keys()):
+        print(f"'{k}',")
