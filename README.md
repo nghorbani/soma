@@ -54,11 +54,10 @@ Please install MoSh++ following the guidelines in its repository.
 
 ## Using SOMA
 There are multiple main parts of the codebase that we try to explain in the [Tutorials](src/tutorials):
-- Training SOMA
-- Running SOMA on MPC data
-- Running MoSh++ on labeled mocaps 
-- Rendering reconstructed bodies with [Blender](https://docs.blender.org/api/current/info_quickstart.html)
-- Evaluating SOMA; i.e. labeling performance and surface reconstruction accuracy
+- [Run SOMA On MoCap Point Cloud Data](src/tutorials/run_soma_on_soma_dataset.ipynb)
+- [Label Priming an Unknown Marker Layout](src/tutorials/lablel_priming.ipynb)
+- [SOMA Ablative Studies](src/tutorials/ablation_study.ipynb)
+- [Solve Already Labeled MoCaps With MoSh++](src/tutorials/solve_labeled_mocap.ipynb)
 
 ## Citation
 
