@@ -55,7 +55,7 @@ Please install MoSh++ following the guidelines in its repository.
 ## Using SOMA
 There are multiple main parts of the codebase that we try to explain in the [Tutorials](src/tutorials):
 - [Run SOMA On MoCap Point Cloud Data](src/tutorials/run_soma_on_soma_dataset.ipynb)
-- [Label Priming an Unknown Marker Layout](src/tutorials/lablel_priming.ipynb)
+- [Label Priming an Unknown Marker Layout](src/tutorials/label_priming.ipynb)
 - [SOMA Ablative Studies](src/tutorials/ablation_study.ipynb)
 - [Solve Already Labeled MoCaps With MoSh++](src/tutorials/solve_labeled_mocap.ipynb)
 
