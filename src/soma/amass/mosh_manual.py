@@ -36,17 +36,30 @@ from omegaconf import OmegaConf
 
 from moshpp.mosh_head import MoSh
 from moshpp.mosh_head import run_moshpp_once
-from soma.render.blender_tools import prepare_render_cfg
+from moshpp.tools.mocap_interface import MocapSession
+from moshpp.tools.run_tools import universal_mosh_jobs_filter
+from soma.render.blender_tools import prepare_render_cfg  # could be commented if no rendering is expected
 from soma.render.blender_tools import render_mosh_once
 from soma.tools.parallel_tools import run_parallel_jobs
 
 
 def mosh_manual(
-        mocap_fnames: list,
-        mosh_cfg: dict = None,
-        render_cfg: dict = None,
-        parallel_cfg: dict = None,
+        mocap_fnames,
+        mosh_cfg=None,
+        render_cfg=None,
+        parallel_cfg=None,
+        # mosh_stagei_perseq = False,
         **kwargs):
+    '''
+
+    :param mocap_fnames: list
+    :param mosh_cfg: dict
+    :param render_cfg:dict
+    :param parallel_cfg:
+    # :param mosh_stagei_perseq: dict
+    :param kwargs: bool
+    :return:
+    '''
     if parallel_cfg is None: parallel_cfg = {}
     if mosh_cfg is None: mosh_cfg = {}
     if render_cfg is None: render_cfg = {}
@@ -80,34 +93,81 @@ def mosh_manual(
         })
         if persubject_marker_layout:
             # todo: do we need to pick the mocaps to produce the layout here?
-            mosh_job.update({
-                'dirs.marker_layout_fname': '${dirs.work_base_dir}/${mocap.ds_name}/${mocap.ds_name}_${mocap.subject_name}_${surface_model.type}.json',
-            })
+            mosh_job.update({'dirs.marker_layout.fname':
+                                 '${dirs.work_base_dir}/${mocap.ds_name}/${mocap.ds_name}_${mocap.session_name}_${surface_model.type}.json',
+                             })
+        # if mosh_stagei_perseq:
+        #     mosh_job['dirs.stagei_fname'] = \
+        #         '${dirs.work_base_dir}/${mocap.ds_name}/${mocap.session_name}/${mocap.basename}_stagei.pkl'
+        #     mosh_job['moshpp.stagei_frame_picker.stagei_mocap_fnames'] = [mocap_fname]
+        #     # mosh_job['dirs.marker_layout.fname'] = \
+        #     #     '${dirs.work_base_dir}/${mocap.ds_name}/${mocap.session_name}/${mocap.basename}_${surface_model.type}.json'
 
         cur_mosh_cfg = MoSh.prepare_cfg(**mosh_job.copy())
+        perseq_mosh_stagei = cur_mosh_cfg.moshpp.perseq_mosh_stagei
 
-        if only_stagei and osp.exists(cur_mosh_cfg.dirs.stagei_fname): continue
-
-        if mocap_key not in exclude_mosh_job_keys and not osp.exists(cur_mosh_cfg.dirs.stageii_fname):
-            mosh_jobs.append(mosh_job.copy())
-            if not osp.exists(cur_mosh_cfg.dirs.stagei_fname) and not determine_shape_for_each_seq:
-                exclude_mosh_job_keys.append(mocap_key)
+        try:
+            cur_mosh_cfg.dirs.stagei_fname
+        except Exception as e:
+            mocap_subject_mask = MocapSession(mocap_fname, 'mm').subject_mask
+            logger.error(e)
+            raise ValueError("Could not find the correct multisubject gender settings.json. "
+                             "Specify the interested subject and the desired model gender: subjects: #markers {} \n "
+                             "A sample settings file {} at the session folder would be: {} \n".format(
+                {sname: smask.sum() for sname, smask in mocap_subject_mask.items()},
+                osp.join(osp.dirname(mocap_fname), 'settings.json'),
+                {sname: {"gender": "unknown"} for sname in mocap_subject_mask.keys()}))
+        render_key = '_'.join(mocap_fname.split('/')[-3:])
+        if cur_mosh_cfg.mocap.subject_id >= 0 and cur_mosh_cfg.mocap.subject_name not in cur_mosh_cfg.mocap.subject_names:
+            logger.warning(f'subject name {cur_mosh_cfg.mocap.subject_name} '
+                           f'not available in mocap subjects {cur_mosh_cfg.mocap.subject_names} of {mocap_fname}')
             continue
 
-        if osp.exists(cur_mosh_cfg.dirs.stageii_fname):
-            render_job = render_cfg.copy()
-            render_job.update({
-                'mesh.mosh_stageii_pkl_fnames': [cur_mosh_cfg.dirs.stageii_fname],
-            })
-            cur_render_cfg = prepare_render_cfg(**render_job)
-            if not osp.exists(cur_render_cfg.dirs.mp4_out_fname):
-                render_jobs.append(render_job)
+        mocap_subjects = cur_mosh_cfg.mocap.subject_names if cur_mosh_cfg.mocap.subject_id >= 0 else [None]
 
-    if 'mosh' in run_tasks:
+        for subject_id, subject_name in enumerate(mocap_subjects):
+            if subject_name is not None:
+
+                if cur_mosh_cfg.mocap.multi_subject and subject_name == 'null': continue
+                mocap_key += f'_{subject_name}'
+
+                cur_mosh_cfg.mocap.subject_id = subject_id
+                # in case subject name is given it wont change after subject_id change
+                if cur_mosh_cfg.mocap.subject_name != subject_name: continue
+                mosh_job.update({'mocap.subject_id': subject_id})
+
+            if 'mosh-stagei' in run_tasks:
+                mosh_job.update({'runtime.stagei_only': True})
+                if osp.exists(cur_mosh_cfg.dirs.stagei_fname): continue
+
+            if not osp.exists(cur_mosh_cfg.dirs.stageii_fname):
+                mosh_jobs.append(mosh_job.copy())
+                continue  # mosh results are not available
+
+            if render_key not in exclude_render_job_keys:
+                render_job = render_cfg.copy()
+                if cur_mosh_cfg.mocap.multi_subject:
+                    stageii_fname_split = cur_mosh_cfg.dirs.stageii_fname.split('/')
+                    stageii_fname_split[-2] = '*'
+                    mosh_stageii_fnames = glob('/'.join(stageii_fname_split))
+                else:
+                    mosh_stageii_fnames = [cur_mosh_cfg.dirs.stageii_fname]
+
+                render_job.update({
+                    'mesh.mosh_stageii_pkl_fnames': mosh_stageii_fnames,
+                })
+                cur_render_cfg = prepare_render_cfg(**render_job)
+                if not osp.exists(cur_render_cfg.dirs.mp4_out_fname):
+                    render_jobs.append(render_job.copy())
+                    exclude_render_job_keys.append(render_key)
+
+    if np.any([task in run_tasks for task in ['mosh', 'mosh-stagei']]):
         logger.info('Submitting MoSh++ jobs.')
 
         base_parallel_cfg = OmegaConf.load(osp.join(app_support_dir, 'conf/parallel_conf/moshpp_parallel.yaml'))
         moshpp_parallel_cfg = OmegaConf.merge(base_parallel_cfg, OmegaConf.create(parallel_cfg))
+        mosh_jobs = universal_mosh_jobs_filter(mosh_jobs, determine_shape_for_each_seq=perseq_mosh_stagei)
+
         run_parallel_jobs(func=run_moshpp_once, jobs=mosh_jobs, parallel_cfg=moshpp_parallel_cfg)
 
     if 'render' in run_tasks:
@@ -116,3 +176,4 @@ def mosh_manual(
         base_parallel_cfg = OmegaConf.load(osp.join(app_support_dir, 'conf/parallel_conf/blender_parallel.yaml'))
         render_parallel_cfg = OmegaConf.merge(base_parallel_cfg, OmegaConf.create(parallel_cfg))
         run_parallel_jobs(func=render_mosh_once, jobs=render_jobs, parallel_cfg=render_parallel_cfg)
+    return len(render_jobs) > 0 and len(mosh_jobs) > 0
