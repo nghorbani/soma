@@ -448,7 +448,7 @@ def run_soma_once(soma_runtime_cfg):
     if rt_cfg.save_c3d:
         c3d_out_fname = rt_cfg.dirs.mocap_out_fname.replace('.pkl', '.c3d')
         nan_replaced_labels = [l if l != 'nan' else '*{}'.format(i) for i, l in enumerate(results['labels'])]
-        write_mocap_c3d(out_c3d_fname=c3d_out_fname,
+        write_mocap_c3d(out_mocap_fname=c3d_out_fname,
                         markers=results['markers'],
                         labels=nan_replaced_labels,
                         frame_rate=soma_labeler.mocap_frame_rate)
