@@ -1,5 +1,7 @@
 ## SOMA: Solving Optical Marker-Based MoCap Automatically, ICCV'21
 
+**Status (2026-09-17):** research code released with SOMA (ICCV 2021); not under active development. Issues are read; fixes are not promised. Downloads (smpl-fast-derivatives, the SOMA dataset, trained models) come from the official page https://soma.is.tue.mpg.de/ and its download portal, which needs a registered account. Checked on 2026-09-17: the smpl-fast-derivatives link below answers HTTP 200 with the portal's login page, not the file, when not signed in; the portal expects the `sfile=` parameter that the link uses (a `file=` variant is not served). Access problems with a registered account are for the contact on the SOMA website.
+
 This repository contains the official PyTorch implementation of:
 
 SOMA: Solving Optical Marker-Based MoCap Automatically\
